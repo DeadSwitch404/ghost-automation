@@ -1,0 +1,86 @@
+#+TITLE: ds-sudo - DeadSwitch SUDO Role
+#+AUTHOR: DeadSwitch | The Silent Architect
+#+OPTIONS: toc:t num:t \n:nil
+
+* Overview
+This role manages =sudo= installation and configuration on Debian-based systems.
+It ensures a minimal, safe =/etc/sudoers= baseline, while delegating all
+privilege management into =/etc/sudoers.d/= files. Validation is enforced with
+=visudo -cf= to prevent lockouts.
+
+User and group definitions are collected from =ds-users=:
+- Users may have a =sudo= branch in =user_data=.
+- Groups may have a =sudo= branch in =group_data=.
+- Groups referenced in =user_data.groups= are created by =ds-users= and can
+  then be granted sudo privileges here.
+
+* Features
+- Installs the =sudo= package if missing.
+- Configures per-user sudo access.
+- Configures per-group sudo access.
+- Supports =NOPASSWD:ALL= (use with care).
+- Supports =NOPASSWD= for restricted command lists.
+- Ensures all generated files are validated with =visudo -cf=.
+
+* Role Variables
+All variables are defined in =defaults/main.yml=.
+
+** =user_data=
+Consumed from =ds-users=. Only the =sudo= branch is used here.
+
+#+begin_src yaml
+user_data:
+  user1:
+    ssh_key: "ssh-rsa ..."
+    groups:
+      - ansible
+    sudo:               # This branch is used
+      type: nopasswd    # for per-user sudo config
+      commands: all
+#+end_src
+
+** =group_data=
+Consumed from =ds-users=. Only the =sudo= branch is used here.
+
+#+begin_src yaml
+group_data:
+  ansible:
+    sudo:               # This branch is used
+      type: nopasswd    # for per-group sudo config
+      commands: all
+#+end_src
+
+* Examples
+
+** Full sudo for a user
+#+begin_src yaml
+user_data:
+  admin:
+    ssh_key: "ssh-rsa ..."
+    groups:
+      - wheel
+    sudo:
+      type: nopasswd
+      commands: all
+#+end_src
+
+** Full sudo for a group
+#+begin_src yaml
+group_data:
+  ansible:
+    sudo:
+      type: nopasswd
+      commands: all
+#+end_src
+
+* Templates
+- =ds-sudo-users.j2= → generates per-user sudo rules.
+- =ds-sudo-groups.j2= → generates per-group sudo rules.
+
+* Safety
+- All files are placed under =/etc/sudoers.d/= with mode =0440=.
+- Every change is validated with =visudo -cf %s=.
+- The main =/etc/sudoers= remains minimal and untouched.
+
+* License
+MIT. Fear the silence. Fear the switch.

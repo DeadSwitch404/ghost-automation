@@ -1,0 +1,44 @@
+#+TITLE: DeadSwitch Firewall Role
+#+AUTHOR: DeadSwitch | The Silent Architect
+#+OPTIONS: toc:nil num:nil \n:t
+
+* DeadSwitch Firewall Role
+Minimal firewall management using UFW with sane defaults.
+Applies CIS Level 1/2 server hardening guidance:
+- Deny all incoming by default.
+- Allow all outgoing by default.
+- Permit only required services (SSH).
+
+* Defaults
+#+begin_src yaml
+firewall_default_incoming: deny
+firewall_default_outgoing: allow
+firewall_allowed_ports:
+  - port: "{{ sshd_port | default('22') }}"
+    proto: tcp
+#+end_src
+
+* Tasks
+1. Install and enable UFW.
+2. Set default incoming/outgoing policies.
+3. Allow configured ports from ~firewall_allowed_ports~.
+4. Enable and start the UFW service.
+
+* Variables
+- ~firewall_default_incoming~ :: default = ~deny~
+- ~firewall_default_outgoing~ :: default = ~allow~
+- ~firewall_allowed_ports~ :: list of ports and protocols to allow
+
+* Example
+#+begin_src yaml
+- hosts: servers
+  roles:
+    - role: ds-firewall
+      vars:
+        firewall_allowed_ports:
+          - { port: "{{ sshd_port | default('22') }}", proto: tcp }
+          - { port: "53", proto: udp }
+#+end_src
+
+* License
+MIT. Fear the silence. Fear the switch.

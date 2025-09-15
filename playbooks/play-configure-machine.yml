@@ -1,0 +1,10 @@
+---
+- name: Ghost Automation
+  hosts: all
+  become: yes
+
+  roles:
+    - role: ds-users
+    - role: ds-sudo
+    - role: ds-ssh
+    - role: ds-firewall

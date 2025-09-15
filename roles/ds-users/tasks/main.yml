@@ -1,0 +1,49 @@
+---
+- name: Deploy the groups
+  ansible.builtin.group:
+    name: "{{ item.key }}"
+    state: present
+  when: group_data is defined
+  loop: "{{ group_data | dict2items }}"
+
+- name: Deploy the user groups
+  ansible.builtin.group:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ user_data | dict2items | map(attribute='value.groups') | select('defined') | flatten | unique }}"
+
+- name: Merge user_data with vault_data
+  ansible.builtin.set_fact:
+    merge_data: "{{ user_data | ansible.builtin.combine(vault_data | default({}), recursive=True) }}"
+  
+- name: Deploy the users
+  ansible.builtin.user:
+    name: "{{ item.key }}"
+    comment: "{{ item.value.full_name | default('') }}"
+    append: yes
+    create_home: yes
+    update_password: on_create
+    password: "{{ item.value.password | default('*') }}"
+    groups: "{{ item.value.groups | default([]) }}"
+    shell: "{{ item.value.shell | default('/bin/bash') }}"
+    state: present
+  loop: "{{ merge_data | dict2items }}"
+
+- name: Deploy the SSH public keys
+  ansible.builtin.authorized_key:
+    user: "{{ item.key }}"
+    key: "{{ item.value.ssh_key }}"
+  when: item.value.ssh_key is defined
+  loop: "{{ user_data | dict2items }}"
+
+- name: Configure the shell prompts
+  ansible.builtin.lineinfile:
+    path: /home/{{ item.key }}/.bashrc
+    regexp: '^PS1='
+    create: yes
+    line: "{{ item.value.prompt }}"
+    owner: "{{ item.key }}"
+    group: "{{ item.key }}"
+    mode: "0640"
+  when: item.value.prompt is defined
+  loop: "{{ user_data | dict2items }}"

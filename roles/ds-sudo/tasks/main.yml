@@ -1,0 +1,25 @@
+---
+- name: Install the sudo package
+  ansible.builtin.apt:
+    name: sudo
+    state: present
+
+- name: Deploy the per-user sudoers file
+  ansible.builtin.template:
+    src: ds-sudo-users.j2
+    dest: /etc/sudoers.d/ds-sudo-users
+    owner: root
+    group: root
+    mode: '0440'
+    validate: 'visudo -cf %s'
+  when: user_data is defined
+
+- name: Deploy the per-group sudoers file
+  ansible.builtin.template:
+    src: ds-sudo-groups.j2
+    dest: /etc/sudoers.d/ds-sudo-groups
+    owner: root
+    group: root
+    mode: '0440'
+    validate: 'visudo -cf %s'
+  when: group_data is defined

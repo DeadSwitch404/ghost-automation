@@ -1,0 +1,12 @@
+---
+galaxy_info:
+  role_name: ds-firewall
+  author: DeadSwitch
+  description: UFW firewall configuration
+  license: MIT
+  min_ansible_version: "2.12"
+  platforms:
+    - name: Debian
+      versions:
+        - bullseye
+        - bookworm

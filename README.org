@@ -1,0 +1,76 @@
+#+TITLE: Ghost Automation
+#+AUTHOR: DeadSwitch | The Silent Architect
+#+OPTIONS: toc:t num:t \n:nil
+
+* Overview
+Ghost Automation is the DeadSwitch infrastructure automation framework.
+It provides hardened, reproducible machine configurations using Ansible.
+Every role is designed for security, minimalism, and validation.
+
+The goal: any bare machine can be turned into a Ghost Machine with one playbook.
+
+* Structure
+#+begin_example
+inventories/     → Hosts, group vars, host vars
+playbooks/       → Entry point playbooks
+roles/           → Modular roles (ds-*)
+ansible.cfg      → Ansible configuration
+ansible.log      → Execution logs
+cache/           → Local cache (VMs, test data)
+#+end_example
+
+* Roles
+| Role            | Purpose                                              |
+|-----------------+------------------------------------------------------|
+| =ds-users=      | Create users, groups, and deploy SSH keys.           |
+| =ds-sudo=       | Manage sudoers safely with validation.               |
+| =ds-ssh=        | Configure SSH access for users.                      |
+| =ds-firewall=   | Manage firewall rules (default deny, explicit allow) |
+
+Each role ships with its own =README.org= describing variables, structure, and usage.
+
+* Playbooks
+- =play-configure-machine.yml= :: Base playbook to provision a host with all DeadSwitch roles.
+
+Example usage:
+#+begin_src shell
+ansible-playbook -i inventories/hosts.yml playbooks/play-configure-machine.yml
+#+end_src
+
+This playbook runs the baseline:
+#+begin_example
+- ds-users
+- ds-sudo
+- ds-ssh
+- ds-firewall
+#+end_example
+
+* Inventories
+Inventories are organized as:
+- =hosts.yml= → main inventory of target machines
+- =group_vars/= → group-level variables
+- =host_vars/= → host-specific variables
+
+Example =hosts.yml=:
+#+begin_src yaml
+all:
+  hosts:
+    debian-13-test:
+      ansible_host: 192.168.122.100
+      ansible_user: switch
+#+end_src
+
+* Development
+- Use Python virtual environment (=.venv=) for isolation.
+- Run =ansible-lint= and =yamllint= before commits.
+- Future: Molecule scenarios for each role (test each role in isolation).
+
+* Safety
+- Sudo configurations validated with =visudo=.
+- Groups are created before being assigned to users.
+- SSH hardening applied cautiously to prevent lockouts.
+- Firewall is deny-first, require explicit allow.
+- Principle: *secure by default, flexible by variable*.
+
+* License
+MIT. Fear the silence. Fear the switch.

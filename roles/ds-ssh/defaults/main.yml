@@ -1,0 +1,44 @@
+---
+
+# === Values used by 'sshd_config.j2' ===
+
+sshd_package_name: openssh-server
+sshd_service_name: ssh
+sshd_config_owner: root
+sshd_config_group: root
+sshd_config_mode: "0644"
+sshd_port: 22
+sshd_protocol: 2
+
+sshd_permit_root_login: "prohibit-password"
+sshd_password_authentication: "yes"
+sshd_x11_forwarding: "no"
+sshd_allow_tcp_forwarding: "no"
+sshd_max_auth_tries: 3
+sshd_login_grace_time: 30
+
+sshd_harden: "yes"
+
+# === Values used by 'harden_ssh.j2' ===
+
+sshd_challenge_response: "no"
+sshd_kbd_interactive_auth: "no"
+sshd_client_alive_interval: 300
+sshd_client_alive_count_max: 0
+sshd_allowusers: []
+sshd_allowgroups: []
+
+sshd_ciphers:
+  - chacha20-poly1305@openssh.com
+  - aes256-gcm@openssh.com
+  - aes128-gcm@openssh.com
+  - aes256-ctr
+  - aes192-ctr
+  - aes128-ctr
+
+sshd_kex_algorithms:
+  - curve25519-sha256
+  - curve25519-sha256@libssh.org
+  - ecdh-sha2-nistp521
+  - ecdh-sha2-nistp384
+  - ecdh-sha2-nistp256

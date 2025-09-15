@@ -1,0 +1,13 @@
+
+---
+# === Example ===
+# user_data:
+#   user1:
+#     ssh_key: no
+#     full_name: "User One"
+#     groups:
+#       - ansible
+#       - developer
+#     sudo:
+#       type: normal
+#       commands: all

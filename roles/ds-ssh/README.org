@@ -1,0 +1,72 @@
+#+TITLE: DeadSwitch SSH Role
+#+AUTHOR: DeadSwitch | The Silent Architect
+#+OPTIONS: toc:nil num:nil \n:t
+
+* Overview
+
+The base role for deploying and managing OpenSSH.  
+It provides hardened but safe defaults while allowing further overrides.  
+
+* Features
+
+- Installs and enables the OpenSSH server
+- Manages =/etc/ssh/sshd_config= from a template
+- Provides hardened defaults, safe for most environments
+- Centralized variables for customization
+- Designed as a foundation for *ds-ssh-harden*
+
+* Defaults
+
+#+begin_src yaml
+sshd_package_name: openssh-server
+sshd_service_name: ssh
+sshd_config_owner: root
+sshd_config_group: root
+sshd_config_mode: "0644"
+sshd_port: 22
+sshd_protocol: 2
+
+sshd_permit_root_login: "prohibit-password"
+sshd_password_authentication: "yes"
+sshd_x11_forwarding: "no"
+sshd_allow_tcp_forwarding: "no"
+sshd_max_auth_tries: 3
+sshd_login_grace_time: 30
+
+sshd_challenge_response: "no"
+sshd_kbd_interactive_auth: "no"
+sshd_client_alive_interval: 300
+sshd_client_alive_count_max: 0
+
+sshd_ciphers:
+  - chacha20-poly1305@openssh.com
+  - aes256-gcm@openssh.com
+  - aes128-gcm@openssh.com
+  - aes256-ctr
+  - aes192-ctr
+  - aes128-ctr
+
+sshd_kex_algorithms:
+  - curve25519-sha256
+  - curve25519-sha256@libssh.org
+  - ecdh-sha2-nistp521
+  - ecdh-sha2-nistp384
+  - ecdh-sha2-nistp256
+#+end_src
+
+* Usage
+
+Include in your playbook:
+
+#+begin_src yaml
+- hosts: all
+  roles:
+    - role: ds-ssh
+      vars:
+        sshd_port: 2222
+        sshd_permit_root_login: no
+        sshd_password_authentication: no
+#+end_src
+
+* License
+MIT. Fear the silence. Fear the switch.

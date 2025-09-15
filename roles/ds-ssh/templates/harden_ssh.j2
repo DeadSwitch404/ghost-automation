@@ -1,0 +1,25 @@
+# {{ ansible_managed }}
+
+# ----------------------------
+# SSH Hardening Overrides
+# ----------------------------
+
+# Disable password and challenge-response auth
+ChallengeResponseAuthentication {{ sshd_challenge_response }}
+KbdInteractiveAuthentication {{ sshd_kbd_interactive_auth }}
+
+# Restrict which users/groups may log in
+{% if sshd_allowusers is defined and sshd_allowusers | length > 0 %}
+AllowUsers {{ sshd_allowusers | join(" ") }}
+{% endif %}
+
+{% if sshd_allowgroups is defined and sshd_allowgroups | length > 0 %}
+AllowGroups {{ sshd_allowgroups | join(" ") }}
+{% endif %}
+
+# Set idle timeout
+ClientAliveInterval {{ sshd_client_alive_interval }}
+ClientAliveCountMax {{ sshd_client_alive_count_max }}
+
+Ciphers {{ sshd_ciphers | join(",") }}
+KexAlgorithms {{ sshd_kex_algorithms | join(",") }}

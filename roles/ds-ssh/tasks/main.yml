@@ -1,0 +1,32 @@
+---
+- name: Install the OpenSSH server
+  ansible.builtin.apt:
+    name: "{{ sshd_package_name }}"
+    state: present
+
+- name: Deploy the basic sshd configuration
+  ansible.builtin.template:
+    src: sshd_config.j2
+    dest: /etc/ssh/sshd_config
+    owner: "{{ sshd_config_owner }}"
+    group: "{{ sshd_config_group }}"
+    mode: "{{ sshd_config_mode }}"
+    validate: 'sshd -t -f %s'
+  notify: Restart_ssh_service
+
+- name: Deploy the hardened sshd configuration
+  ansible.builtin.template:
+    src: harden_ssh.j2
+    dest: /etc/ssh/sshd_config.d/10-harden.conf
+    owner: "{{ sshd_config_owner }}"
+    group: "{{ sshd_config_group }}"
+    mode: "{{ sshd_config_mode }}"
+    validate: 'sshd -t -f %s'
+  when: sshd_harden
+  notify: Restart_ssh_service
+
+- name: Enable and start the OpenSSH server
+  ansible.builtin.service:
+    name: "{{ sshd_service_name }}"
+    state: started
+    enabled: yes

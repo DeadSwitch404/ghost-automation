@@ -1,0 +1,10 @@
+.venv/
+.ansible
+.env
+ansible.log
+cache/
+*.retry
+*.swp
+*.bak
+vault-password.txt
+inventories/

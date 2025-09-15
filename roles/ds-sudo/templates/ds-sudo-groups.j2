@@ -1,0 +1,11 @@
+# {{ ansible_managed }}
+
+{% for groupname, data in group_data.items() %}
+{% if data.sudo is defined %}
+{% if data.sudo.commands == "all" %}
+%{{ groupname }} ALL=(ALL){% if data.sudo.type == "nopasswd" %} NOPASSWD:{% endif %} ALL
+{% else %}
+%{{ groupname }} ALL=(ALL){% if data.sudo.type == "nopasswd" %} NOPASSWD:{% endif %} {{ data.sudo.commands | join(", ") }}
+{% endif %}
+{% endif %}
+{% endfor %}
