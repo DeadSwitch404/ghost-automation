@@ -27,6 +27,7 @@
     groups: "{{ item.value.groups | default([]) }}"
     shell: "{{ item.value.shell | default('/bin/bash') }}"
     state: present
+  no_log: yes
   loop: "{{ merge_data | dict2items }}"
 
 - name: Deploy the SSH public keys
