@@ -69,4 +69,6 @@ Include in your playbook:
 #+end_src
 
 * License
-MIT. Fear the silence. Fear the switch.
+MIT.
+
+=[Fear the silence. Fear the switch.]=
