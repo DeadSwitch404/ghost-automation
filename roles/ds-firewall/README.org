@@ -2,9 +2,9 @@
 #+AUTHOR: DeadSwitch | The Silent Architect
 #+OPTIONS: toc:nil num:nil \n:t
 
-* DeadSwitch Firewall Role
+* Overview
 Minimal firewall management using UFW with sane defaults.
-Applies CIS Level 1/2 server hardening guidance:
+Applies CIS Level 1/2 server hardening /guidance/:
 - Deny all incoming by default.
 - Allow all outgoing by default.
 - Permit only required services (SSH).
@@ -25,9 +25,9 @@ firewall_allowed_ports:
 4. Enable and start the UFW service.
 
 * Variables
-- ~firewall_default_incoming~ :: default = ~deny~
-- ~firewall_default_outgoing~ :: default = ~allow~
-- ~firewall_allowed_ports~ :: list of ports and protocols to allow
+- =firewall_default_incoming= :: default = =deny=
+- =firewall_default_outgoing= :: default = =allow=
+- =firewall_allowed_ports= :: list of ports and protocols to allow
 
 * Example
 #+begin_src yaml
@@ -41,4 +41,6 @@ firewall_allowed_ports:
 #+end_src
 
 * License
-MIT. Fear the silence. Fear the switch.
+MIT.
+
+=[Fear the silence. Fear the switch.]=

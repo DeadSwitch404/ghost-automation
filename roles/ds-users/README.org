@@ -3,9 +3,10 @@
 #+OPTIONS: toc:t num:t \n:nil
 
 * Overview
-This role manages user and group creation, as well as SSH key deployment, on
+This role manages user and group creation, as well as public SSH key deployment, on
 Debian-based systems. It ensures that users exist, that their groups are
 created and assigned correctly, and that their SSH keys are installed.
+The role can set up the initial password.
 Privilege configuration is delegated to the =ds-sudo= role.
 
 * Features
@@ -19,7 +20,6 @@ Privilege configuration is delegated to the =ds-sudo= role.
 - Fully compatible with =ds-sudo= for privilege management.
 
 * Role Variables
-All variables are defined in =defaults/main.yml=.
 
 ** =user_data=
 Dictionary of users and their attributes:
@@ -37,12 +37,12 @@ user_data:
       commands: all
 #+end_src
 
-- =ssh_key= → optional; if defined, will be deployed to =~/.ssh/authorized_keys=.
+- =ssh_key=   → optional; if defined, will be deployed to =~/.ssh/authorized_keys=.
 - =full_name= → optional; sets the user's GECOS/comment field.
-- =prompt= → optional; sets the BASH prompt of the user (=.bashrc=).
-- =password= → optional; sets the password only at user creation; defaults to "*".
-- =groups= → optional; list of groups to add the user to.
-- =sudo= → ignored by =ds-users=; passed through for use by =ds-sudo=.
+- =prompt=    → optional; sets the BASH prompt of the user (=.bashrc=).
+- =password=  → optional; sets the password only at user creation; defaults to ="*"=.
+- =groups=    → optional; list of groups to add the user to.
+- =sudo=      → ignored by =ds-users=; passed through for use by =ds-sudo=.
 
 For real password hashes, store them in an Ansible Vault in the =vault_data= hash.
 (Hash the passwords with ~openssl passwd -6~)
@@ -57,6 +57,15 @@ group_data:
     sudo:             # Used only by ds-sudo
       type: nopasswd
       commands: all
+#+end_src
+
+** =vault_data=
+Dictionary from an encrypted file that gets merged to =user_data=.
+
+#+begin_src yaml
+vault_data:
+  user1:
+    password: "$6$hashedpassword"
 #+end_src
 
 * Examples
@@ -86,6 +95,14 @@ user_data:
       commands: all
 #+end_src
 
+In an encrypted file:
+
+#+begin_src yaml
+vault_data:
+  deadswitch:
+    password: "$6$hashedpassword"
+#+end_src
+
 * Safety
 - Existing users and group memberships are preserved; =append: yes= is used.
 - Groups are auto-created if referenced in either =user_data= or =group_data=.
@@ -94,4 +111,6 @@ user_data:
 - Sudo privileges are not modified by this role; use =ds-sudo=.
 
 * License
-MIT. Fear the silence. Fear the switch.
+MIT.
+
+=[Fear the silence. Fear the switch.]=
