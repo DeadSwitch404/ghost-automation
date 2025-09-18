@@ -49,5 +49,3 @@ iface enp1s0 inet static
 EOF"
 
 echo -e "[+] The virtual machine is configured..."
-
-cd "$ORIG_DIR"
