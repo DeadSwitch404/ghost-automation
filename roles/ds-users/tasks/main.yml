@@ -15,23 +15,23 @@
 - name: Merge user_data with vault_data
   ansible.builtin.set_fact:
     merge_data: "{{ user_data | ansible.builtin.combine(vault_data | default({}), recursive=True) }}"
-  
+
 - name: Deploy the users
   ansible.builtin.user:
     name: "{{ item.key }}"
     comment: "{{ item.value.full_name | default('') }}"
-    append: yes
-    create_home: yes
+    append: true
+    create_home: true
     update_password: on_create
     password: "{{ item.value.password | default('*') }}"
     groups: "{{ item.value.groups | default([]) }}"
     shell: "{{ item.value.shell | default('/bin/bash') }}"
     state: present
-  no_log: yes
+  no_log: true
   loop: "{{ merge_data | dict2items }}"
 
 - name: Deploy the SSH public keys
-  ansible.builtin.authorized_key:
+  ansible.posix.authorized_key:
     user: "{{ item.key }}"
     key: "{{ item.value.ssh_key }}"
   when: item.value.ssh_key is defined
@@ -41,7 +41,7 @@
   ansible.builtin.lineinfile:
     path: /home/{{ item.key }}/.bashrc
     regexp: '^PS1='
-    create: yes
+    create: true
     line: "{{ item.value.prompt }}"
     owner: "{{ item.key }}"
     group: "{{ item.key }}"

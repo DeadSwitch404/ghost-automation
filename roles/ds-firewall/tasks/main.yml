@@ -26,4 +26,4 @@
   ansible.builtin.service:
     name: ufw
     state: started
-    enabled: yes
+    enabled: true
