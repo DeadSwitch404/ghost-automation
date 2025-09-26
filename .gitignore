@@ -8,3 +8,4 @@ cache/
 *.bak
 vault-password.txt
 inventories/
+.sops.yaml
