@@ -50,4 +50,4 @@ Include it in your playbook:
 * License
 MIT.
 
-=[Fear the Silence. Fear the Switch.]=
+=[ Fear the Silence. Fear the Switch. ]=

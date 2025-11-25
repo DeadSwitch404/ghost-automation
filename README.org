@@ -28,7 +28,6 @@ ansible.cfg      → Ansible configuration
 | =ds-sudo=         | Manage sudoers safely with validation.                               |
 | =ds-ssh=          | Configure SSH access for users.                                      |
 | =ds-firewall=     | Manage firewall rules (default deny input, explicit allow).          |
-#+TBLFM: $1=ds-basepackages
 
 Each role ships with its own =README.org= describing variables, structure, and usage.
 
