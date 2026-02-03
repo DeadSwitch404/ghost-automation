@@ -1,6 +1,6 @@
 #+TITLE: Operation Zero - The silence before automation
 #+AUTHOR: DeadSwitch | The Silent Architect
-#+OPTIONS: toc:t num:t \n:nil
+#+OPTIONS: toc:nil num:t \n:nil
 
 * Overview
 Operation Zero is the silence before automation.
