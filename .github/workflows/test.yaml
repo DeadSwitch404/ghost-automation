@@ -16,6 +16,6 @@ jobs:
       - name: Check out the repository
         uses: actions/checkout@v4
       - name: Install the dependencies
-        run: apt-get update && apt-get install ansible
+        run: apt-get update && apt-get install -y ansible
       - name: Run Ansible
         run: ansible-playbook playbooks/play-operation-zero.yml -e @.github/test/variables.yaml -i localhost, -c local
