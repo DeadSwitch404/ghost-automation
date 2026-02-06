@@ -1,0 +1,21 @@
+---
+name: Ansible Test Run
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  ansible-run-test:
+    runs-on: ubuntu-latest
+    container:
+      image: debian:13
+
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+      - name: Install the dependencies
+        run: apt-get update && apt-get install ansible
+      - name: Run Ansible
+        run: ansible-playbook playbooks/play-operation-zero.yml -e @.github/test/variables.yaml -i localhost, -c local

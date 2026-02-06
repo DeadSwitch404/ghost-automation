@@ -1,0 +1,22 @@
+---
+group_data:
+  ansible:
+    sudo:
+      type: nopasswd
+      commands: all
+
+user_data:
+  deadswitch:
+    ssh_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINBpU3ZoAwSXwSZoAae4ca1BPVwcNaxIYXkYwzCbX5+4"
+    full_name: "DeadSwitch"
+    password: "*"
+    groups:
+      - ansible
+    sudo:
+      type: nopasswd
+      commands: all
+
+firewall_allowed_ports:
+  - { port: "{{ sshd_port | default('22') }}", proto: tcp }
+  - { port: "53", proto: udp }
+  - { port: "443", proto: tcp }
